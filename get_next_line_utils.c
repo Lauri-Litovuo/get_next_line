@@ -6,36 +6,46 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:14:30 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/22 13:59:57 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/23 11:14:34 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strchr(char *s, int c)
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	char	*sp;
-	char	ch;
+	char				*dstp;
+	char				*srcp;
+	unsigned long		i;
 
-	sp = (char *)s;
-	ch = c;
-	while (*sp != '\0')
+	dstp = (char *)dst;
+	srcp = (char *)src;
+	i = 0;
+	if (!srcp && !dstp && len)
+		return (dst);
+	if (srcp < dstp)
 	{
-		if (*sp == ch)
-			return (sp);
-		sp++;
+		while (len--)
+			dstp[len] = srcp[len];
+		return (dst);
 	}
-	if (*sp == ch)
-		return (sp);
-	return (NULL);
+	else
+	{
+		while (i != len)
+		{
+			dstp[i] = srcp[i];
+			i++;
+		}
+	}
+	return (dst);
 }
 
-int	get_index(char *s, int c, int *index)
+void	ft_putstr_fd(char *s, int fd)
 {
-	char	*ptr;
+	int	i;
 
-	ptr = ft_strchr(s, c);
-	if (ptr == NULL)
-		return (-1);
-	*index = (int)(ptr - s);
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	write(fd, s, i);
 }
