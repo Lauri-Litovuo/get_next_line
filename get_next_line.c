@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/23 11:58:57 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/23 12:48:51 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 char	*get_next_line(int fd)
 {
 	char			buffer[BUFFER_SIZE];
-	static char		leftover[BUFFER_SIZE];
+	char			leftover[BUFFER_SIZE];
 	ssize_t			b_read;
-	int				index;
+	ssize_t			index;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -25,13 +25,14 @@ char	*get_next_line(int fd)
 	b_read = 1;
 	while (b_read > 0)
 	{
-		b_read = read(fd, buffer, sizeof(buffer)); 
+		b_read = read(fd, buffer, sizeof(buffer));
 		if (b_read == -1)
 			return (NULL);
 		if (b_read == 0)
-			print_line
+			print_line(buffer, BUFFER_SIZE);
 		else
-			save_leftovers
+			save_leftovers(leftover, buffer, BUFFER_SIZE);
+		index = 0;
 	}
 	return (buffer);
 }

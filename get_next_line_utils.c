@@ -6,13 +6,13 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:14:30 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/23 11:14:34 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/23 12:45:55 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+void	*ft_memmove(void *dst, void *src, size_t len)
 {
 	char				*dstp;
 	char				*srcp;
@@ -40,12 +40,22 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	return (dst);
 }
 
-void	ft_putstr_fd(char *s, int fd)
+size_t	print_line(char *buffer, ssize_t max_size)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (s[i] != '\0')
+	while (buffer[i] != '\n' && i < max_size)
 		i++;
-	write(fd, s, i);
+	write(1, buffer, i);
+	return (i);
+}
+
+char	save_leftovers(char *leftover, char *buffer, ssize_t max_size)
+{
+	size_t	i;
+
+	while (buffer[i] != '\n' && i < max_size)
+		i++;
+	ft_memmove(leftover, buffer, i);
 }

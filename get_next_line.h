@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:15:23 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/22 14:15:20 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/23 12:46:02 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 # include <stdlib.h>
 
 char	*get_next_line(int fd);
-char	*ft_strchr(char *s, int c);
-int		get_index(char *s, int c, int *index);
+void	*ft_memmove(void *dst, void *src, size_t len);
+void	ft_putstr_fd(char *s, int fd);
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 #endif
