@@ -6,16 +6,17 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/23 12:48:51 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:19:02 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+
 char	*get_next_line(int fd)
 {
-	char			buffer[BUFFER_SIZE];
-	char			leftover[BUFFER_SIZE];
+	char			buffer[BUFFER_SIZE + 1];
+	char			leftover[BUFFER_SIZE + 1];
 	ssize_t			b_read;
 	ssize_t			index;
 
