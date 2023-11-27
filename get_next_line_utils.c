@@ -6,22 +6,11 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:14:30 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/27 10:10:03 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/27 11:15:32 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-size_t	ft_putstr(char *buffer, ssize_t max_size)
-{
-	size_t	i;
-
-	i = 0;
-	while (buffer[i] != '\n' && buffer[i] != '\0')
-		i++;
-	write(1, buffer, i);
-	return (i);
-}
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
