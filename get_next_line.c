@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/27 17:40:26 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/28 16:45:53 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,31 @@
  */
 static char	*get_line(char *mix_bin)
 {
+	char			*new_mix;
 	char			*line;
-	static int		i;
+	int				i;
 	int				j;
 
-	while (mix_bin[i] != '\n' && mix_bin[i] != '\0')
-	{
+	i = 0;
+	while (mix_bin[i] != '\n')
 		i++;
-	}
-	if (mix_bin[i] == '\0')
-		return (NULL);
-	line = ft_calloc(i + 1, sizeof(char));
+	line = ft_calloc(i + 2, sizeof(char));
 	if (!line)
 	{
 		free (mix_bin);
 		return (NULL);
 	}
 	j = 0;
-	while (j <= i)
-	{
-		line[j] = mix_bin[j];
-		j++;
-	}
+	ft_strlcpy(line, mix_bin, i + 2);
+	j = ft_strlen(mix_bin) - i;
+	new_mix = calloc(j, sizeof(char));
+	ft_strlcpy(new_mix, mix_bin + i + 1, j);
+	free (mix_bin);
+	mix_bin = new_mix;
+	//the pointer freeing and assigning needs to be solved next. Otherwise the code works
 	return (line);
 }
+
 /**
  * @brief Combines the residue of buffer after line extraction to the mixed_bin.
  * Dynamically adjusts memory for the bin.
@@ -57,22 +58,22 @@ static char	*get_line(char *mix_bin)
  * @param mixed_bin 
  * @return char* return combined string.
  */
-static char	*combine_incomplete(char *buffer, char *mix_bin)
+
+static char	*combine_to_mix(char *buffer, char *mix_bin)
 {
-	char	*temp;
 	int		len;
+	char	*temp;
 
 	len = 0;
-	while (mix_bin[len] = '\0')
-	{
-		len++;
-	}
-	temp = malloc((len + 1) * sizeof(char));
+	temp = malloc ((sizeof(mix_bin) + BUFFER_SIZE) * sizeof(char));
 	if (!temp)
 	{
 		free(mix_bin);
 		return (NULL);
 	}
+	temp = ft_strjoin(mix_bin, buffer);
+	free (mix_bin);
+	return (temp);
 }
 
 /**
@@ -81,36 +82,43 @@ static char	*combine_incomplete(char *buffer, char *mix_bin)
  * 
  */
 
-static char	*read_file(int fd)
+static char	*read_file(int fd, char *buffer)
 {
-	char	*buffer;
-	char	*mix_bin;
-	size_t	bit_read;
+	char		*buffer;
+	const char	*mix_bin;
+	size_t		bit_read;
 
 	if (mix_bin == 0)
-		mix_bin = ft_calloc(1, 1)
-	while (bit_read > 0)
+		mix_bin = ft_calloc(1, sizeof(char));
+	while (bit_read > 0 && ft_strchr(buffer, '\n') != NULL)
 	{
 		bit_read = read(fd, buffer, BUFFER_SIZE);
 		if (bit_read == -1)
+		{
+			free (mix_bin);
 			return (NULL);
-		mix_bin = combine_incomplete(buffer, mix_bin);
-		
+		}
+		mix_bin = combine_to_mix(buffer, mix_bin);
+		if (!mix_bin)
+			return (NULL);
 	}
+	return (buffer);
 }
 
 char	*get_next_line(int fd)
 {
+	char		*buffer;
 	char		*line;
-	int			bit_read;
 
-	bit_read = 1;
 	if (fd < 0)
 		return (NULL);
-	while (bit_read > 0)
+	buffer = ft_calloc((BUFFER_SIZE + 1) * sizeof(char));
+	line = read_file(fd, buffer);
+	if (line == 0)
 	{
-		bit_read = read_file(fd);
-		line = get_line(line)
+		free (buffer);
+		return (NULL);
 	}
+	free (buffer);
 	return (line);
 }
