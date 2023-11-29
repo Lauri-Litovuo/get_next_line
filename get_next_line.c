@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/28 16:45:53 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:33:09 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,29 @@
  */
 static char	*get_line(char *mix_bin)
 {
-	char			*new_mix;
 	char			*line;
 	int				i;
-	int				j;
 
 	i = 0;
 	while (mix_bin[i] != '\n')
 		i++;
 	line = ft_calloc(i + 2, sizeof(char));
 	if (!line)
-	{
-		free (mix_bin);
 		return (NULL);
-	}
-	j = 0;
 	ft_strlcpy(line, mix_bin, i + 2);
-	j = ft_strlen(mix_bin) - i;
-	new_mix = calloc(j, sizeof(char));
-	ft_strlcpy(new_mix, mix_bin + i + 1, j);
-	free (mix_bin);
-	mix_bin = new_mix;
-	//the pointer freeing and assigning needs to be solved next. Otherwise the code works
 	return (line);
 }
+
+i = 0;
+j = 0;
+while (mix_bin[i] != '\n')
+	i++;
+new_mix = calloc(j, sizeof(char));
+j = ft_strlen(mix_bin) - i;
+ft_strlcpy(new_mix, mix_bin + i + 1, j);
+free (mix_bin);
+mix_bin = new_mix;
+
 
 /**
  * @brief Combines the residue of buffer after line extraction to the mixed_bin.
@@ -58,7 +57,6 @@ static char	*get_line(char *mix_bin)
  * @param mixed_bin 
  * @return char* return combined string.
  */
-
 static char	*combine_to_mix(char *buffer, char *mix_bin)
 {
 	int		len;
@@ -114,6 +112,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buffer = ft_calloc((BUFFER_SIZE + 1) * sizeof(char));
 	line = read_file(fd, buffer);
+	if (line)
 	if (line == 0)
 	{
 		free (buffer);
