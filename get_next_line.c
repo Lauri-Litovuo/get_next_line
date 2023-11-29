@@ -6,15 +6,16 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/29 14:38:08 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/29 16:24:54 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-//For tuesday: check how the pointers move around that the line is returned to next_line. What should be sent to read_file?
-// is the strchr necessary? How about strlen?
-// how to deal with the temporal char arrays? how to implement the static character here?
+/*
+Must check the EOF behavior if there is no \n character.
+Must check why strlen crash when checking strlen of read_buffer?!
+*/
 
 /**
  * @brief Get the line that ends with the next line character.
@@ -52,7 +53,7 @@ static char	*save_residual(char	*mix_bin)
 	new_mix = calloc(j, sizeof(char));
 	if (!new_mix)
 		return (NULL);
-	new_mix = ft_strlcpy(new_mix, mix_bin + i + 1, j);
+	ft_strlcpy(new_mix, mix_bin + i + 1, j);
 	free (mix_bin);
 	return (new_mix);
 }
@@ -66,7 +67,7 @@ static char	*save_residual(char	*mix_bin)
  * @param mixed_bin 
  * @return char* return combined string.
  */
-static char	*combine_to_mix(char *buffer, char *mix_bin)
+static char	*combine_to_mix(char *read_buffer, char *mix_bin)
 {
 	int		len;
 	char	*temp;
@@ -78,7 +79,7 @@ static char	*combine_to_mix(char *buffer, char *mix_bin)
 		free(mix_bin);
 		return (NULL);
 	}
-	temp = ft_strjoin(mix_bin, buffer);
+	temp = ft_strjoin(mix_bin, read_buffer);
 	free (mix_bin);
 	return (temp);
 }
@@ -91,31 +92,39 @@ static char	*combine_to_mix(char *buffer, char *mix_bin)
 
 static char	*read_file(int fd, char *mix_bin)
 {
-	char		*read_buffer[BUFFER_SIZE + 1];
+	char		*read_buffer;
 	size_t		bit_read;
 
+	read_buffer = ft_calloc((BUFFER_SIZE + 2), sizeof(char));
 	while (bit_read > 0)
 	{
 		bit_read = read(fd, read_buffer, BUFFER_SIZE);
 		if (bit_read == -1)
+		{
+			free (read_buffer);
 			return (NULL);
+		}
 		mix_bin = combine_to_mix(read_buffer, mix_bin);
 		if (!mix_bin)
+		{
+			free (read_buffer);
 			return (NULL);
+		}
 		if (ft_strchr(mix_bin, '\n') != NULL)
 			break ;
 	}
+	free (read_buffer);
 	return (mix_bin);
 }
 
 char	*get_next_line(int fd)
 {
-	const char		*mix_bin;
+	static char		*mix_bin;
 	char			*line;
 
 	if (!mix_bin)
 		mix_bin = ft_calloc(1, sizeof(char));
-	if (fd < 0 !mix_bin)
+	if (fd < 0 || !mix_bin)
 		return (NULL);
 	if (ft_strchr(mix_bin, '\n') == NULL)
 	{
@@ -128,7 +137,6 @@ char	*get_next_line(int fd)
 	}
 	line = get_line(mix_bin);
 	mix_bin = save_residual(mix_bin);
-	//here should be propably some kind of check if the read-file has reached EOF
 	if (line == NULL)
 	{
 		free (mix_bin);
