@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/29 09:33:09 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/29 14:38:08 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,24 @@ static char	*get_line(char *mix_bin)
 	return (line);
 }
 
-i = 0;
-j = 0;
-while (mix_bin[i] != '\n')
-	i++;
-new_mix = calloc(j, sizeof(char));
-j = ft_strlen(mix_bin) - i;
-ft_strlcpy(new_mix, mix_bin + i + 1, j);
-free (mix_bin);
-mix_bin = new_mix;
+static char	*save_residual(char	*mix_bin)
+{
+	char	*new_mix;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (mix_bin[i] != '\n')
+		i++;
+	j = ft_strlen(mix_bin) - i;
+	new_mix = calloc(j, sizeof(char));
+	if (!new_mix)
+		return (NULL);
+	new_mix = ft_strlcpy(new_mix, mix_bin + i + 1, j);
+	free (mix_bin);
+	return (new_mix);
+}
 
 
 /**
@@ -80,44 +89,50 @@ static char	*combine_to_mix(char *buffer, char *mix_bin)
  * 
  */
 
-static char	*read_file(int fd, char *buffer)
+static char	*read_file(int fd, char *mix_bin)
 {
-	char		*buffer;
-	const char	*mix_bin;
+	char		*read_buffer[BUFFER_SIZE + 1];
 	size_t		bit_read;
 
-	if (mix_bin == 0)
-		mix_bin = ft_calloc(1, sizeof(char));
-	while (bit_read > 0 && ft_strchr(buffer, '\n') != NULL)
+	while (bit_read > 0)
 	{
-		bit_read = read(fd, buffer, BUFFER_SIZE);
+		bit_read = read(fd, read_buffer, BUFFER_SIZE);
 		if (bit_read == -1)
-		{
-			free (mix_bin);
 			return (NULL);
-		}
-		mix_bin = combine_to_mix(buffer, mix_bin);
+		mix_bin = combine_to_mix(read_buffer, mix_bin);
 		if (!mix_bin)
 			return (NULL);
+		if (ft_strchr(mix_bin, '\n') != NULL)
+			break ;
 	}
-	return (buffer);
+	return (mix_bin);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buffer;
-	char		*line;
+	const char		*mix_bin;
+	char			*line;
 
-	if (fd < 0)
+	if (!mix_bin)
+		mix_bin = ft_calloc(1, sizeof(char));
+	if (fd < 0 !mix_bin)
 		return (NULL);
-	buffer = ft_calloc((BUFFER_SIZE + 1) * sizeof(char));
-	line = read_file(fd, buffer);
-	if (line)
-	if (line == 0)
+	if (ft_strchr(mix_bin, '\n') == NULL)
 	{
-		free (buffer);
+		mix_bin = read_file(fd, mix_bin);
+		if (mix_bin == NULL)
+		{
+			free (mix_bin);
+			return (NULL);
+		}
+	}
+	line = get_line(mix_bin);
+	mix_bin = save_residual(mix_bin);
+	//here should be propably some kind of check if the read-file has reached EOF
+	if (line == NULL)
+	{
+		free (mix_bin);
 		return (NULL);
 	}
-	free (buffer);
 	return (line);
 }
