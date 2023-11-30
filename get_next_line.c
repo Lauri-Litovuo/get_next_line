@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/30 13:39:30 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/11/30 14:37:01 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 /*
 Must check the EOF behavior if there is no \n character.
-Must check why strlen crash when checking strlen of read_buffer?!
+EoB error, check combine function that it does not overwrite.
 */
 
 /**
- * @brief Get the line that ends with the next line character.
+ * @brief Function extracts and returns a line, when newline character
+ *  is found from mix_bin.
  * 
- * @param buffer 
- * @param line 
- * @return char* returns a full line.
+ * @param mix_bin The static variable, to which reads are appended.
+ * @return char* The next line.
  */
-static char	*get_line(char *mix_bin)
+char	*get_line(char *mix_bin)
 {
 	char			*line;
 	int				i;
@@ -38,8 +38,16 @@ static char	*get_line(char *mix_bin)
 	ft_strlcpy(line, mix_bin, i + 2);
 	return (line);
 }
+/**
+ * @brief Assigns the residual after a newline char to mix_bin and
+ * adjusts the memory for fit.
+ * 
+ * @param mix_bin The static variable, to which reads are appended.
+ * @return char* Returns the address of the residual to be assigned
+ * to mix_bin.
+ */
 
-static char	*save_residual(char	*mix_bin)
+char	*save_residual(char	*mix_bin)
 {
 	char	*residual;
 	int		i;
@@ -58,14 +66,13 @@ static char	*save_residual(char	*mix_bin)
 	return (residual);
 }
 
-
 /**
- * @brief Combines the residue of buffer after line extraction to the mixed_bin.
- * Dynamically adjusts memory for the bin.
+ * @brief Function combines each read buffer to static variable
+ * with allocating fitting memory.
  * 
- * @param buffer 
- * @param mixed_bin 
- * @return char* return combined string.
+ * @param read_buffer the string from each read calls of size BUF_SIZE.
+ * @param mix_bin Static variable collecting reads.
+ * @return char* Allocated static variable of joined strings.
  */
 char	*combine_to_mix(char *read_buffer, char *mix_bin)
 {
@@ -85,11 +92,12 @@ char	*combine_to_mix(char *read_buffer, char *mix_bin)
 }
 
 /**
- * @brief This function reads the file and returns a line for the get_next_line.
- * With the use of other static functions it should check for nulls and '\n'
+ * @brief Function reads file until EOF or '\n' is found.
  * 
+ * @param fd File descriptor to read from.
+ * @param mix_bin Static variable of appended reads.
+ * @return char* Returns the static variable if EOF reached or '\n' found.
  */
-
 char	*read_file(int fd, char *mix_bin)
 {
 	char		*read_buffer;
@@ -114,6 +122,13 @@ char	*read_file(int fd, char *mix_bin)
 	free (read_buffer);
 	return (mix_bin);
 }
+/**
+ * @brief Get the next line from a file (fd). Keeps residual 
+ * beyond next-line in static variable
+ * 
+ * @param fd File descriptor.
+ * @return char* Returns a pointer to allocated new line.
+ */
 
 char	*get_next_line(int fd)
 {
