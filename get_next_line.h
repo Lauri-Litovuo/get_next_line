@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:15:23 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/01 12:32:49 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/01 12:46:42 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ char		*ft_strjoin(char const *s1, char const *s2);
 size_t		ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
+#  define BUFFER_SIZE 10
 # endif
 #endif
