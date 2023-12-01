@@ -6,12 +6,9 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/01 13:13:15 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/01 17:01:22 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include <stdio.h>
-
 
 #include "get_next_line.h"
 
@@ -27,13 +24,13 @@ EoB error, check combine function that it does not overwrite.
  * @param mix_bin The static variable, to which reads are appended.
  * @return char* The next line.
  */
-char	*get_line(char *mix_bin)
+char	*extract_line(char *mix_bin)
 {
 	char			*line;
 	int				i;
 
 	i = 0;
-	while (mix_bin[i] != '\n')
+	while (mix_bin[i] != '\n' && mix_bin[i] != '\0')
 		i++;
 	line = ft_calloc(i + 2, sizeof(char));
 	if (!line)
@@ -58,7 +55,7 @@ char	*save_residual(char	*mix_bin)
 
 	i = 0;
 	j = 0;
-	while (mix_bin[i] != '\n')
+	while (mix_bin[i] != '\n' && mix_bin[i] != '\0')
 		i++;
 	j = ft_strlen(mix_bin) - i;
 	residual = calloc(j, sizeof(char));
@@ -88,6 +85,8 @@ char	*combine_to_mix(char *read_buffer, char *mix_bin)
 		return (NULL);
 	temp = ft_strjoin(mix_bin, read_buffer);
 	free (mix_bin);
+	if (!temp)
+		return (NULL);
 	mix_bin = ft_calloc(ft_strlen(temp) + 1, sizeof(char));
 	ft_strlcpy(mix_bin, temp, ft_strlen(temp) + 1);
 	free (temp);
@@ -118,7 +117,10 @@ char	*read_file(int fd, char *mix_bin)
 			free (read_buffer);
 			return (NULL);
 		}
-		mix_bin = combine_to_mix(read_buffer, mix_bin);
+		if (bit_read > 0)
+			mix_bin = combine_to_mix(read_buffer, mix_bin);
+		if (!mix_bin)
+			return (NULL);
 		if (ft_strchr(mix_bin, '\n') != NULL)
 			break ;
 	}
@@ -138,9 +140,11 @@ char	*get_next_line(int fd)
 	static char		*mix_bin;
 	char			*line;
 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
 	if (!mix_bin)
 		mix_bin = ft_calloc(1, sizeof(char));
-	if (fd < 0 || !mix_bin)
+	if (!mix_bin)
 		return (NULL);
 	if (ft_strchr(mix_bin, '\n') == NULL)
 	{
@@ -151,7 +155,7 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 	}
-	line = get_line(mix_bin);
+	line = extract_line(mix_bin);
 	mix_bin = save_residual(mix_bin);
 	return (line);
 }
