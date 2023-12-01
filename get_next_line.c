@@ -6,9 +6,12 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/30 14:52:59 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/01 13:13:15 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <stdio.h>
+
 
 #include "get_next_line.h"
 
@@ -85,8 +88,8 @@ char	*combine_to_mix(char *read_buffer, char *mix_bin)
 		return (NULL);
 	temp = ft_strjoin(mix_bin, read_buffer);
 	free (mix_bin);
-	mix_bin = ft_calloc(ft_strlen(temp), sizeof(char));
-	ft_strlcpy(mix_bin, temp, ft_strlen(temp));
+	mix_bin = ft_calloc(ft_strlen(temp) + 1, sizeof(char));
+	ft_strlcpy(mix_bin, temp, ft_strlen(temp) + 1);
 	free (temp);
 	return (mix_bin);
 }
@@ -107,7 +110,7 @@ char	*read_file(int fd, char *mix_bin)
 	if (!read_buffer)
 		return (NULL);
 	bit_read = 1;
-	while (bit_read > 0)
+	while (bit_read > 0 && ft_strchr(mix_bin, '\n') == NULL)
 	{
 		bit_read = read(fd, read_buffer, BUFFER_SIZE);
 		if (bit_read == -1)
