@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/01 17:01:22 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/03 12:19:33 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ char	*combine_to_mix(char *read_buffer, char *mix_bin)
  * @param mix_bin Static variable of appended reads.
  * @return char* Returns the static variable if EOF reached or '\n' found.
  */
+
 char	*read_file(int fd, char *mix_bin)
 {
 	char		*read_buffer;
@@ -112,15 +113,13 @@ char	*read_file(int fd, char *mix_bin)
 	while (bit_read > 0 && ft_strchr(mix_bin, '\n') == NULL)
 	{
 		bit_read = read(fd, read_buffer, BUFFER_SIZE);
-		if (bit_read == -1)
+		if (bit_read > 0)
+			mix_bin = combine_to_mix(read_buffer, mix_bin);
+		if (bit_read == -1 || !mix_bin)
 		{
 			free (read_buffer);
 			return (NULL);
 		}
-		if (bit_read > 0)
-			mix_bin = combine_to_mix(read_buffer, mix_bin);
-		if (!mix_bin)
-			return (NULL);
 		if (ft_strchr(mix_bin, '\n') != NULL)
 			break ;
 	}
@@ -140,7 +139,7 @@ char	*get_next_line(int fd)
 	static char		*mix_bin;
 	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
 	if (!mix_bin)
 		mix_bin = ft_calloc(1, sizeof(char));
@@ -149,7 +148,7 @@ char	*get_next_line(int fd)
 	if (ft_strchr(mix_bin, '\n') == NULL)
 	{
 		mix_bin = read_file(fd, mix_bin);
-		if (!mix_bin)
+		if (!mix_bin || *mix_bin == '\0')
 		{
 			free (mix_bin);
 			return (NULL);
