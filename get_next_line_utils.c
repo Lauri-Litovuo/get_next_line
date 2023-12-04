@@ -6,43 +6,13 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:14:30 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/11/29 16:17:37 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/04 12:34:54 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_bzero(void *s, size_t n)
-{
-	char	zero;
-	char	*zerop;
-
-	zero = 0;
-	zerop = s;
-	while (n > 0)
-	{
-		*zerop = zero;
-		zerop++;
-		n--;
-	}
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	void	*ptr;
-
-	if (size && count && ((count * size) / count) != size)
-		return (NULL);
-	if (count == 0)
-		count = 1;
-	ptr = malloc(count * size);
-	if (!(ptr))
-		return (NULL);
-	ft_bzero(ptr, (count * size));
-	return (ptr);
-}
-
-size_t	ft_strlen(const char *a)
+size_t	ft_strlen(char *a)
 {
 	int	i;
 
@@ -54,11 +24,13 @@ size_t	ft_strlen(const char *a)
 	return (i);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	char	*sp;
 	char	ch;
 
+	if (!s)
+		return (NULL);
 	sp = (char *)s;
 	ch = c;
 	while (*sp != '\0')
@@ -72,7 +44,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+size_t	ft_strlcpy(char *dst, char *src, size_t dstsize)
 {
 	unsigned int	i;
 	char			*cpysrc;
@@ -95,7 +67,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	return (i);
 }
 
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+size_t	ft_strlcat(char *dst, char *src, size_t dstsize)
 {
 	unsigned int	dst_len;
 	unsigned int	src_len;
@@ -124,17 +96,28 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (temp + src_len);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*joint;
 	int		len;
 
+	if (!s1)
+	{
+		s1 = (char *) malloc (1 * sizeof(char));
+		s1[0] = '\0';
+	}
+	if (!s2 || !s1)
+		return (NULL);
 	len = ft_strlen((char *)s1);
 	len += ft_strlen((char *)s2);
-	joint = (char *) malloc(len * sizeof(char) + 1);
+	joint = (char *) malloc((len + 1) * sizeof(char));
 	if (!(joint))
+	{
+		free ((char *)s1);
 		return (NULL);
+	}
 	ft_strlcpy(joint, s1, len + 1);
 	ft_strlcat(joint, s2, len + 1);
+	free (s1);
 	return (joint);
 }
