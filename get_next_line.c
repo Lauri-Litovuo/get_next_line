@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/04 13:37:24 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/05 15:07:57 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,18 @@
  * @return char* The next line.
  */
 
-char	*extract_line(char *mix_bin)
+char	*extract_line(char *mix_bin, char *line)
 {
-	char			*line;
-	int				i;
+	size_t	i;
 
 	i = 0;
 	if (!mix_bin[i])
 		return (NULL);
 	while (mix_bin[i] != '\n' && mix_bin[i] != '\0')
 		i++;
-	line = malloc((i + 2) * sizeof(char));
+	if (mix_bin[i] == '\n')
+		i++;
+	line = malloc((i + 1) * sizeof(char));
 	if (!line)
 		return (NULL);
 	i = 0;
@@ -57,28 +58,31 @@ char	*extract_line(char *mix_bin)
  * to mix_bin.
  */
 
-char	*save_residual(char	*mix_bin)
+char	*save_residual(char	*mix_bin, char *residual)
 {
-	char	*residual;
-	int		i;
-	int		j;
+	size_t		i;
+	size_t		j;
 
 	i = 0;
 	j = 0;
-	while (mix_bin[i] != '\n' && mix_bin[i] != '\0')
+	if (!mix_bin)
+		return (NULL);
+	while (mix_bin[i] != '\n' && mix_bin[i] != 0)
 		i++;
-	residual = malloc (((int)ft_strlen(mix_bin) - i + 1) * sizeof(char));
-	if (!residual || mix_bin[i] == '\0')
-		return (free (mix_bin), free (residual), NULL);
-	if (mix_bin[i] != '\0')
+	if (mix_bin[i] == 0 || ft_strlen(mix_bin) == i)
+		return (free (mix_bin), NULL);
+	residual = malloc ((ft_strlen(mix_bin) - i + 1) * sizeof(char));
+	if (!residual)
+		return (free (mix_bin), NULL);
+	if (mix_bin[i] != '\0' && i < ft_strlen(mix_bin))
 	{
 		i++;
 		while (mix_bin[i] != '\0')
 			residual[j++] = mix_bin[i++];
 		residual[j] = '\0';
 	}
-	if (j == 0 && j != sizeof(residual))
-		return (free (residual), free (mix_bin), NULL);
+	if (j == 0 || j == BUFFER_SIZE + 1)
+		return (free (mix_bin), free (residual), NULL);
 	free (mix_bin);
 	return (residual);
 }
@@ -96,9 +100,10 @@ char	*read_file(int fd, char *mix_bin)
 	char		*read_buffer;
 	int			bit_read;
 
+	read_buffer = NULL;
 	read_buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!read_buffer)
-		return (NULL);
+		return (free (mix_bin), NULL);
 	bit_read = 1;
 	while (bit_read != 0 && ft_strchr(mix_bin, '\n') == NULL)
 	{
@@ -128,7 +133,10 @@ char	*get_next_line(int fd)
 {
 	static char		*mix_bin;
 	char			*line;
+	char			*residual;
 
+	line = NULL;
+	residual = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 	{
 		mix_bin = 0;
@@ -140,7 +148,9 @@ char	*get_next_line(int fd)
 		free (mix_bin);
 		return (NULL);
 	}
-	line = extract_line(mix_bin);
-	mix_bin = save_residual(mix_bin);
+	line = extract_line(mix_bin, line);
+	mix_bin = save_residual(mix_bin, residual);
+	free (residual);
+	residual = NULL;
 	return (line);
 }

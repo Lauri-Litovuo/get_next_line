@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:14:30 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/04 12:34:54 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/05 13:33:36 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,23 +101,25 @@ char	*ft_strjoin(char *s1, char *s2)
 	char	*joint;
 	int		len;
 
-	if (!s1)
+	if (!s1 && s2)
 	{
 		s1 = (char *) malloc (1 * sizeof(char));
+		if (!s1)
+			return (NULL);
 		s1[0] = '\0';
 	}
-	if (!s2 || !s1)
-		return (NULL);
-	len = ft_strlen((char *)s1);
-	len += ft_strlen((char *)s2);
-	joint = (char *) malloc((len + 1) * sizeof(char));
-	if (!(joint))
+	len = ft_strlen(s1);
+	if (!s2)
 	{
-		free ((char *)s1);
+		free (s1);
 		return (NULL);
 	}
+	len += ft_strlen(s2);
+	joint = (char *) malloc((len + 1) * sizeof(char));
+	if (!joint)
+		return (free (s1), NULL);
 	ft_strlcpy(joint, s1, len + 1);
-	ft_strlcat(joint, s2, len + 1);
 	free (s1);
+	ft_strlcat(joint, s2, len + 1);
 	return (joint);
 }

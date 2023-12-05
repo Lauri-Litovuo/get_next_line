@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:15:23 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/04 12:35:24 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/05 12:50:17 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 char		*get_next_line(int fd);
 char		*read_file(int fd, char *mix_bin);
-char		*save_residual(char	*mix_bin);
-char		*extract_line(char *mix_bin);
+char		*save_residual(char	*mix_bin, char *residual);
+char		*extract_line(char *mix_bin, char *line);
 
 size_t		ft_strlen(char *a);
 char		*ft_strchr(char *s, int c);
