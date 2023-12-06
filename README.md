@@ -11,7 +11,7 @@ Get Next Line is a project that is part of the curriculum for the Hive Helsinki 
 
 ## Installation Instructions
 To use the Get Next Line function, follow these steps:
-1. Clone the repository to your local machine using `git clone [https://github.com/Lauri-Litovuo/get_next_line.git] get_next_line`
+1. Clone the repository to your local machine using `git clone https://github.com/Lauri-Litovuo/get_next_line.git get_next_line`
 2. Navigate to the project directory using `cd get_next_line`
 3. Compile the project using makefile or compiler commands e.g.: `cc -Wall -Wextra -Werror get_next_line.c get_next_line_utils.h main.c`
 
