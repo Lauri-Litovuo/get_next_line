@@ -6,7 +6,7 @@
 /*   By: llitovuo <llitovuo@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 09:13:29 by llitovuo          #+#    #+#             */
-/*   Updated: 2023/12/05 15:07:57 by llitovuo         ###   ########.fr       */
+/*   Updated: 2023/12/05 15:39:22 by llitovuo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,6 @@ char	*save_residual(char	*mix_bin, char *residual)
 			residual[j++] = mix_bin[i++];
 		residual[j] = '\0';
 	}
-	if (j == 0 || j == BUFFER_SIZE + 1)
-		return (free (mix_bin), free (residual), NULL);
 	free (mix_bin);
 	return (residual);
 }
@@ -137,8 +135,9 @@ char	*get_next_line(int fd)
 
 	line = NULL;
 	residual = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, mix_bin, 0) < 0)
 	{
+		free (mix_bin);
 		mix_bin = 0;
 		return (NULL);
 	}
