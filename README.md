@@ -1,7 +1,9 @@
 # Get Next Line
 
 ## Introduction
-Get Next Line is a project that is part of the curriculum for the Hive Helsinki Coding School. Through this project, I learned the use of static variables in C and usage of the read function. Yet, the key learning for me in this project was appropriate use of the dynamic memory allocation (malloc) and free.
+Get Next Line is a project that is part of the curriculum for the Hive Helsinki Coding School. The goal of this project was programming a function that returns a line read from a file descriptor.
+
+Through this project, I learned the use of static variables in C and usage of the read function. Yet, the key learning for me in this project was appropriate use of the dynamic memory allocation (malloc) and free.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -44,7 +46,7 @@ int main(void)
 ```
 
 ## Tests
-When testing the Get Next Line function, keep in mind that both the buffer size and the line size can be of very different values, and a file descriptor does not only point to regular files. You can assign your own buffer size with flag `-D BUFFER_SIZE=n`.
+When testing the Get_next_line function, keep in mind that both the buffer size and the line size can be of very different values. You can define your own buffer size with flag `-D BUFFER_SIZE=n`. As default the BUFFER_SIZE is set to 5.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
