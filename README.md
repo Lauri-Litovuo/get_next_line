@@ -25,6 +25,7 @@ Here is an example of how to use the function:
 ```c
 #include "get_next_line.h"
 #include <fcntl.h>
+#include <stdio.h>
 
 int main(void)
 {
