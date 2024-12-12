@@ -21,8 +21,9 @@ int	main(void)
 	fd = open("oneliner.txt", O_RDONLY);
 	if (fd == -1)
 		printf("failure");
-	while (reads < 200 && line != 0)
+	while (line)
 	{
+		free(line)
 		line = get_next_line(fd);
 		reads++;
 		printf("Line %d:%s\n", reads, line);
